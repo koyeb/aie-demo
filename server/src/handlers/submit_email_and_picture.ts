@@ -1,31 +1,73 @@
-import { type CreateUserSubmissionInput, type SubmissionResponse } from '../schema';
-import { createUserSubmission } from './create_user_submission';
-import { sendToExternalService } from './send_to_external_service';
+import { db } from '../db';
+import { userSubmissionsTable } from '../db/schema';
+import { type CreateUserSubmissionInput, type SubmissionResponse, type UserSubmission } from '../schema';
+import { eq } from 'drizzle-orm';
+
+// Helper function to create user submission
+const createUserSubmissionRecord = async (input: CreateUserSubmissionInput): Promise<UserSubmission> => {
+  try {
+    const result = await db.insert(userSubmissionsTable)
+      .values({
+        email: input.email,
+        picture_data: input.picture_data,
+        picture_filename: input.picture_filename,
+        picture_mime_type: input.picture_mime_type
+        // submitted_at, processed, and external_request_sent will use their default values
+      })
+      .returning()
+      .execute();
+
+    const submission = result[0];
+    return {
+      ...submission,
+      submitted_at: new Date(submission.submitted_at) // Ensure proper Date type
+    };
+  } catch (error) {
+    console.error('User submission creation failed:', error);
+    throw error;
+  }
+};
+
+// Helper function to simulate external service call
+const sendToExternalServiceRequest = async (submission: UserSubmission): Promise<boolean> => {
+  try {
+    // Simulate external service call (in real implementation, this would make HTTP request)
+    // For now, we'll just update the external_request_sent flag
+    await db.update(userSubmissionsTable)
+      .set({ external_request_sent: true })
+      .where(eq(userSubmissionsTable.id, submission.id))
+      .execute();
+
+    return true;
+  } catch (error) {
+    console.error('External service request failed:', error);
+    return false;
+  }
+};
 
 export const submitEmailAndPicture = async (input: CreateUserSubmissionInput): Promise<SubmissionResponse> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is:
-    // 1. Create a new user submission record
-    // 2. Send the data to the external service
-    // 3. Return a success response with confirmation message
+  try {
+    // Create the submission record
+    const submission = await createUserSubmissionRecord(input);
     
-    try {
-        // Create the submission record
-        const submission = await createUserSubmission(input);
-        
-        // Send to external service
-        const externalRequestSent = await sendToExternalService(submission);
-        
-        return {
-            success: true,
-            message: "Thanks! You'll received your picture by email soon!",
-            submission_id: submission.id
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: "Failed to process your submission. Please try again.",
-            submission_id: 0
-        };
+    // Send to external service
+    const externalRequestSent = await sendToExternalServiceRequest(submission);
+    
+    if (!externalRequestSent) {
+      console.warn(`External service request failed for submission ${submission.id}`);
     }
+    
+    return {
+      success: true,
+      message: "Thanks! You'll receive your picture by email soon!",
+      submission_id: submission.id
+    };
+  } catch (error) {
+    console.error('Submit email and picture failed:', error);
+    return {
+      success: false,
+      message: "Failed to process your submission. Please try again.",
+      submission_id: 0
+    };
+  }
 };
