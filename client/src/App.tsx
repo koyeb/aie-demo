@@ -6,6 +6,7 @@ import { EmailForm } from '@/components/EmailForm';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ProgressIndicator } from '@/components/ProgressIndicator';
+import { LogoHeader } from '@/components/LogoHeader';
 import { trpc } from '@/utils/trpc';
 import { useState } from 'react';
 import type { CreateUserSubmissionInput, SubmissionResponse } from '../../server/src/schema';
@@ -81,9 +82,11 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <ProgressIndicator currentStep={currentStep} />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <LogoHeader />
+        <div className="flex items-center justify-center p-4 pt-8">
+          <div className="w-full max-w-md">
+            <ProgressIndicator currentStep={currentStep} />
         {/* Email Step */}
         {currentStep === 'email' && (
           <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm animate-fade-in">
@@ -209,6 +212,7 @@ function App() {
         )}
         </div>
       </div>
+    </div>
     </ErrorBoundary>
   );
 }
