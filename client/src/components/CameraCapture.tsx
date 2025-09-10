@@ -5,11 +5,10 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 interface CameraCaptureProps {
   onCapture: (imageData: string) => void;
   onError: (error: string) => void;
-  onBack: () => void;
   isLoading?: boolean;
 }
 
-export function CameraCapture({ onCapture, onError, onBack, isLoading = false }: CameraCaptureProps) {
+export function CameraCapture({ onCapture, onError, isLoading = false }: CameraCaptureProps) {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [currentFacingMode, setCurrentFacingMode] = useState<'user' | 'environment'>('user');
   const [errorMessage, setErrorMessage] = useState('');
@@ -18,33 +17,38 @@ export function CameraCapture({ onCapture, onError, onBack, isLoading = false }:
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Cleanup on unmount
+  // Start camera on component mount
   useEffect(() => {
-    return () => {
-      stopCamera();
-    };
-  }, []);
-
-  // Start camera
-  const startCamera = useCallback(async () => {
-    try {
-      setErrorMessage('');
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: currentFacingMode }, 
-        audio: false 
-      });
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        setIsCameraActive(true);
+    const initCamera = async () => {
+      try {
+        setErrorMessage('');
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: currentFacingMode }, 
+          audio: false 
+        });
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          streamRef.current = stream;
+          setIsCameraActive(true);
+        }
+      } catch (error) {
+        console.error('Failed to start camera:', error);
+        const errorMsg = 'Unable to access camera. Please ensure you have granted camera permissions.';
+        setErrorMessage(errorMsg);
+        onError(errorMsg);
       }
-    } catch (error) {
-      console.error('Failed to start camera:', error);
-      const errorMsg = 'Unable to access camera. Please ensure you have granted camera permissions.';
-      setErrorMessage(errorMsg);
-      onError(errorMsg);
-    }
+    };
+
+    initCamera();
+
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+      setIsCameraActive(false);
+    };
   }, [currentFacingMode, onError]);
 
   // Stop camera
@@ -73,12 +77,36 @@ export function CameraCapture({ onCapture, onError, onBack, isLoading = false }:
   // Re-start camera when facing mode changes
   useEffect(() => {
     if (isCameraActive && streamRef.current) {
-      stopCamera();
-      setTimeout(() => {
-        startCamera();
+      // Stop current stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+      setIsCameraActive(false);
+      
+      // Restart with new facing mode after a short delay
+      setTimeout(async () => {
+        try {
+          setErrorMessage('');
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: currentFacingMode }, 
+            audio: false 
+          });
+          
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            streamRef.current = stream;
+            setIsCameraActive(true);
+          }
+        } catch (error) {
+          console.error('Failed to start camera:', error);
+          const errorMsg = 'Unable to access camera. Please ensure you have granted camera permissions.';
+          setErrorMessage(errorMsg);
+          onError(errorMsg);
+        }
       }, 100);
     }
-  }, [currentFacingMode, startCamera, stopCamera, isCameraActive]);
+  }, [currentFacingMode, isCameraActive, onError]);
 
   // Capture picture
   const capturePicture = useCallback(async () => {
@@ -106,40 +134,32 @@ export function CameraCapture({ onCapture, onError, onBack, isLoading = false }:
     const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
     const base64Data = imageDataUrl.split(',')[1];
 
-    // Stop camera
-    stopCamera();
-
-    // Return captured data
+    // Return captured data (but don't stop camera to allow multiple captures)
     onCapture(base64Data);
-  }, [currentFacingMode, onCapture, stopCamera]);
+  }, [currentFacingMode, onCapture]);
 
   return (
-    <div className="space-y-4">
+    <div className="h-screen flex flex-col">
       {!isCameraActive ? (
-        <div className="text-center">
-          <div className="mb-4 p-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
-            <div className="text-6xl mb-2">📸</div>
-            <p className="text-gray-600 text-sm">
-              Click the button below to activate your camera
-            </p>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="mb-4 p-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+              <div className="text-6xl mb-2">📸</div>
+              <p className="text-gray-600 text-sm">
+                Initializing camera...
+              </p>
+            </div>
           </div>
-          <Button 
-            onClick={startCamera} 
-            disabled={isLoading}
-            className="w-full h-12 text-base bg-green-600 hover:bg-green-700"
-          >
-            {isLoading ? 'Starting Camera...' : 'Start Camera'}
-          </Button>
         </div>
       ) : (
-        <div>
-          <div className="relative mb-4">
+        <>
+          <div className="flex-1 relative">
             <video
               ref={videoRef}
               autoPlay
               playsInline
               muted
-              className="w-full rounded-lg border-2 border-gray-200"
+              className="w-full h-full object-cover"
               style={{ 
                 transform: currentFacingMode === 'user' ? 'scaleX(-1)' : 'none' 
               }}
@@ -148,44 +168,44 @@ export function CameraCapture({ onCapture, onError, onBack, isLoading = false }:
               <div className="absolute inset-4 border-2 border-white/50 rounded-lg shadow-lg"></div>
             </div>
             {/* Camera mode indicator */}
-            <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+            <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-2 rounded text-sm">
               {currentFacingMode === 'user' ? '🤳 Front' : '📷 Back'}
             </div>
+            {/* Camera controls */}
+            <div className="absolute top-4 left-4">
+              <Button 
+                onClick={switchCamera}
+                variant="outline"
+                size="sm"
+                className="bg-black/50 border-white/30 text-white hover:bg-black/70"
+                disabled={isLoading}
+              >
+                🔄 Flip
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button 
-              onClick={switchCamera}
-              variant="outline"
-              className="flex-1 h-12"
-              disabled={isLoading}
-            >
-              🔄 Flip
-            </Button>
+          
+          {/* Bottom capture button */}
+          <div className="p-6 bg-white/90 backdrop-blur-sm">
             <Button 
               onClick={capturePicture}
-              className="flex-1 h-12 bg-red-600 hover:bg-red-700"
+              className="w-full h-16 text-lg bg-red-600 hover:bg-red-700 rounded-full"
               disabled={isLoading}
             >
-              📸 Capture
+              {isLoading ? 'Processing...' : '📸 Take Photo'}
             </Button>
           </div>
-          <Button 
-            onClick={onBack}
-            variant="ghost"
-            className="w-full mt-2"
-            disabled={isLoading}
-          >
-            ← Back to Email
-          </Button>
-        </div>
+        </>
       )}
       
       {errorMessage && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertDescription className="text-red-600">
-            {errorMessage}
-          </AlertDescription>
-        </Alert>
+        <div className="absolute bottom-20 left-4 right-4">
+          <Alert className="border-red-200 bg-red-50">
+            <AlertDescription className="text-red-600">
+              {errorMessage}
+            </AlertDescription>
+          </Alert>
+        </div>
       )}
 
       {/* Hidden canvas for image capture */}
