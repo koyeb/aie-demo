@@ -49,7 +49,7 @@ function App() {
 
     try {
       const response: SubmissionResponse = await clientApi.submitEmailAndPicture.mutate(data);
-      
+
       if (response.success) {
         setSuccessMessage(response.message);
         setShowSuccessModal(true);
@@ -78,7 +78,7 @@ function App() {
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <LogoHeader />
-        
+
         {/* Always show camera */}
         <div className="pt-8">
           <CameraCapture
