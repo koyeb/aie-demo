@@ -1,23 +1,27 @@
-This app has been created with [app.build](https://app.build), an open-source platform for AI app development.
+This is a client-side only React application for AI photo demo, created with [app.build](https://app.build), an open-source platform for AI app development.
 
 Core stack:
-- TypeScript with [tRPC](https://trpc.io) for type-safe API communication;
 - React 19 with [Vite](https://vitejs.dev) for the frontend;
-- [Drizzle ORM](https://orm.drizzle.team) for database management;
-- PostgreSQL as the database;
+- TypeScript for type safety;
 - [shadcn/ui](https://ui.shadcn.com) for UI components;
-- [Bun](https://bun.sh) as the runtime and package manager.
+- [Tailwind CSS](https://tailwindcss.com) for styling;
+- [Zod](https://zod.dev) for schema validation.
 
-The app can be run locally via docker compose:
+The app can be run locally:
 ```bash
-docker compose up
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
 ## Project Structure
 
-- `client/` - React frontend application (see [client/README.md](client/README.md) for Vite/React setup details)
-- `server/` - tRPC backend server with Drizzle ORM
-- `tests/` - Playwright test for end-to-end smoke testing;
+- `client/` - React frontend application with camera capture and photo submission functionality
+- `tests/` - Playwright tests for end-to-end testing
 
-For production-ready deployments, you can build an app image from the Dockerfile, and run it with the database configured as env variable APP_DATABASE_URL containing a connection string.
-We recommend using a managed Postgres database service for simpler production deployments. Sign up for a free trial at [Neon](https://get.neon.com/ab5) to get started quickly with $5 credit.
+The application allows users to capture photos using their device camera and submit them along with an email address. All processing is done client-side with no backend required.

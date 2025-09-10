@@ -5,9 +5,9 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { LogoHeader } from '@/components/LogoHeader';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { trpc } from '@/utils/trpc';
+import { clientApi } from '@/services/clientApi';
 import { useState } from 'react';
-import type { CreateUserSubmissionInput, SubmissionResponse } from '../../server/src/schema';
+import type { CreateUserSubmissionInput, SubmissionResponse } from '@/types/schema';
 
 function App() {
   const [email, setEmail] = useState('');
@@ -48,7 +48,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response: SubmissionResponse = await trpc.submitEmailAndPicture.mutate(data);
+      const response: SubmissionResponse = await clientApi.submitEmailAndPicture.mutate(data);
       
       if (response.success) {
         setSuccessMessage(response.message);
