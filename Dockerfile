@@ -1,7 +1,7 @@
 # Simple production Dockerfile that serves pre-built assets
 FROM nginx:alpine
 
-# Copy the built application (run 'npm run build' first)
+# Copy the built application (run 'bun run build' first)
 COPY dist /usr/share/nginx/html
 
 # Create nginx configuration for SPA
