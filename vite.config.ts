@@ -6,6 +6,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
+  root: 'client',
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
+  },
   server: {
     // Allow connections from outside the container
     host: '0.0.0.0',

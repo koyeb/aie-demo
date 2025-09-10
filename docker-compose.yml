@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  aie-demo:
+    build: .
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    
+  # Alternative: build from source with full Dockerfile
+  aie-demo-build:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    profiles:
+      - build
