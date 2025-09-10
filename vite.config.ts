@@ -14,5 +14,6 @@ export default defineConfig({
   server: {
     // Allow connections from outside the container
     host: '0.0.0.0',
+    allowedHosts: true,
   },
 });
