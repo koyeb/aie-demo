@@ -15,5 +15,5 @@ COPY . .
 # Expose port 5173
 EXPOSE 5173
 
-ENTRYPOINT ["bun", "run", "dev"]
+ENTRYPOINT ["bun", "run", "dev", "--host", "0.0.0.0"]
 
