@@ -86,24 +86,24 @@ export function CameraCapture({ onCapture, onError, isLoading = false }: CameraC
       </div>
 
       <div hidden={!isCameraActive}
-        className='flex flex-col justify-items-center w-full'
+        className='flex flex-col gap-4 w-full'
       >
         <video
           ref={videoRef}
           autoPlay
           playsInline
           muted
-          className="max-h-8/10 aspect-video object-contain"
+          className="flex max-h-8/10 aspect-video object-contain"
           style={{
             transform: 'scaleX(-1)'
           }}
         />
 
         {/* Bottom capture button */}
-        <div className="p-6 bg-white/90 backdrop-blur-sm">
+        <div className="flex justify-items-center justify-center">
           <Button
             onClick={capturePicture}
-            className="w-full h-16 text-lg bg-red-600 hover:bg-red-700 rounded-full"
+            className="w-48 h-16 text-lg bg-blue-600 hover:bg-blue-700 rounded-xl"
             disabled={isLoading}
           >
             {isLoading ? 'Processing...' : '📸 Take Photo'}
