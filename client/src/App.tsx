@@ -10,6 +10,7 @@ import { useState } from 'react';
 import type { CreateUserSubmissionInput, SubmissionResponse } from '@/types/schema';
 
 function App() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -17,8 +18,9 @@ function App() {
   const [showEmailModal, setShowEmailModal] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Email submission
-  const handleEmailSubmit = (emailValue: string) => {
+  // Email and name submission
+  const handleEmailSubmit = (nameValue: string, emailValue: string) => {
+    setName(nameValue);
     setEmail(emailValue);
     setErrorMessage('');
     setShowEmailModal(false);
@@ -28,6 +30,7 @@ function App() {
   const handleCameraCapture = async (base64Data: string) => {
     // Prepare submission data
     const submissionData: CreateUserSubmissionInput = {
+      name: name.trim(),
       email: email.trim(),
       picture_data: base64Data,
       picture_filename: `photo_${Date.now()}.jpg`,
@@ -66,6 +69,7 @@ function App() {
 
   // Reset application
   const resetApp = () => {
+    setName('');
     setEmail('');
     setErrorMessage('');
     setSuccessMessage('');
@@ -118,6 +122,7 @@ function App() {
         <EmailModal
           open={showEmailModal}
           onSubmit={handleEmailSubmit}
+          initialName={name}
           initialEmail={email}
         />
 

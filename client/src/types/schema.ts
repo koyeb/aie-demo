@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 // Input schema for creating user submissions
 export const createUserSubmissionInputSchema = z.object({
+  name: z.string().min(1), // User's name
   email: z.string().email(),
   picture_data: z.string().min(1), // Base64 encoded image data, must not be empty
   picture_filename: z.string().min(1),
