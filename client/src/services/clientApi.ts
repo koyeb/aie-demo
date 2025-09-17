@@ -14,10 +14,10 @@ export const clientApi = {
       if (!data.name || !data.email || !data.picture_data) {
         throw new Error('Name, email and picture are required');
       }
-      
+
       const apiBaseUrl = getApiBaseUrl();
       const endpoint = `${apiBaseUrl}/v1/scene`;
-      
+
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -27,9 +27,7 @@ export const clientApi = {
           body: JSON.stringify({
             name: data.name,
             email: data.email,
-            picture_data: data.picture_data,
-            picture_filename: data.picture_filename,
-            picture_mime_type: data.picture_mime_type,
+            original_data: data.picture_data,
           }),
         });
 
