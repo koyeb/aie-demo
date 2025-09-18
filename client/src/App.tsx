@@ -65,6 +65,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
+    resetApp();
   };
 
   // Reset application
