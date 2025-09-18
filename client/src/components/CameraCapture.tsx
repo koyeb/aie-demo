@@ -22,7 +22,9 @@ export function CameraCapture({ onCapture, onError, isLoading = false }: CameraC
       try {
         setErrorMessage('');
         stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: {
+            aspectRatio: 16 / 9,
+          },
           audio: false
         });
 
