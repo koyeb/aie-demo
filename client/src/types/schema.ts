@@ -14,8 +14,6 @@ export type CreateUserSubmissionInput = z.infer<typeof createUserSubmissionInput
 // Response schema for successful submission
 export const submissionResponseSchema = z.object({
   success: z.boolean(),
-  message: z.string(),
-  submission_id: z.number()
 });
 
 export type SubmissionResponse = z.infer<typeof submissionResponseSchema>;
