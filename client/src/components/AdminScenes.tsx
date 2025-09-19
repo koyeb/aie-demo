@@ -148,9 +148,9 @@ export function AdminScenes() {
                     <h4 className="text-sm font-medium mb-2 text-gray-700">
                       Before (Original)
                     </h4>
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={`data:image/jpeg;base64,${scene.original_data}`}
+                        src={scene.fpath}
                         alt={`Original photo by ${scene.name}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -167,9 +167,9 @@ export function AdminScenes() {
                       <h4 className="text-sm font-medium mb-2 text-gray-700">
                         After (Processed)
                       </h4>
-                      <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                      <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
                         <img
-                          src={`data:image/jpeg;base64,${scene.result}`}
+                          src={scene.result}
                           alt={`Processed photo by ${scene.name}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {

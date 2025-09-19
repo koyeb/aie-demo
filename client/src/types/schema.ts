@@ -25,7 +25,7 @@ export const sceneSchema = z.object({
   name: z.string(),
   created_at: z.string(),
   modified_at: z.string(),
-  original_data: z.string(),
+  fpath: z.string(),
   description: z.string().nullable(),
   edit_prompt: z.string().nullable(),
   result: z.string().nullable(),
