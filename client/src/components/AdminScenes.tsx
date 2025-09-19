@@ -12,7 +12,7 @@ export function AdminScenes() {
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const [approvingScenes, setApprovingScenes] = useState<Set<string>>(new Set());
+  const [approvingScenes, setApprovingScenes] = useState<Set<number>>(new Set());
 
   // Load scenes on component mount
   useEffect(() => {
@@ -33,32 +33,37 @@ export function AdminScenes() {
       if (import.meta.env.DEV) {
         const sampleScenes: Scene[] = [
           {
-            id: 'scene-1',
+            id: 1,
             name: 'John Doe',
             email: 'john@example.com',
-            original_image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-            processed_image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&auto=format&q=80&sat=0.5&con=1.2',
-            status: 'pending',
             created_at: '2024-01-15T10:30:00Z',
+            modified_at: '2024-01-15T10:30:00Z',
+            original_data: '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=',
+            description: 'Test photo submission',
+            edit_prompt: 'Make this photo more vibrant',
+            result: null,
           },
           {
-            id: 'scene-2',
+            id: 2,
             name: 'Jane Smith',
             email: 'jane@example.com',
-            original_image_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b1f8?w=400&h=400&fit=crop&crop=face',
-            processed_image_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b1f8?w=400&h=400&fit=crop&crop=face&auto=format&q=80&sat=0.3&con=1.1',
-            status: 'approved',
             created_at: '2024-01-15T09:15:00Z',
-            updated_at: '2024-01-15T09:45:00Z',
+            modified_at: '2024-01-15T09:45:00Z',
+            original_data: '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=',
+            description: 'Portrait photo for editing',
+            edit_prompt: 'Add background blur',
+            result: '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=',
           },
           {
-            id: 'scene-3',
+            id: 3,
             name: 'Mike Johnson',
             email: 'mike@example.com',
-            original_image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-            processed_image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face&auto=format&q=80&sat=0.7&con=1.3',
-            status: 'pending',
             created_at: '2024-01-15T08:45:00Z',
+            modified_at: '2024-01-15T08:45:00Z',
+            original_data: '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=',
+            description: null,
+            edit_prompt: null,
+            result: null,
           },
         ];
         setScenes(sampleScenes);
@@ -71,21 +76,15 @@ export function AdminScenes() {
     }
   };
 
-  const handleApproveScene = async (sceneId: string) => {
+  const handleApproveScene = async (sceneId: number) => {
     setApprovingScenes(prev => new Set(prev).add(sceneId));
     
     try {
-      const result = await clientApi.admin.approveScene(sceneId);
+      const result = await clientApi.admin.approveScene(sceneId.toString());
       
       if (result.success) {
-        // Update the scene status in local state
-        setScenes(prevScenes => 
-          prevScenes.map(scene => 
-            scene.id === sceneId 
-              ? { ...scene, status: 'approved' as const }
-              : scene
-          )
-        );
+        // Refresh the scenes list to get updated data
+        await loadScenes();
       } else {
         setErrorMessage(result.message || 'Failed to approve scene');
       }
@@ -98,18 +97,6 @@ export function AdminScenes() {
         newSet.delete(sceneId);
         return newSet;
       });
-    }
-  };
-
-  const getStatusBadgeVariant = (status: Scene['status']) => {
-    switch (status) {
-      case 'approved':
-        return 'default';
-      case 'rejected':
-        return 'destructive';
-      case 'pending':
-      default:
-        return 'secondary';
     }
   };
 
@@ -184,13 +171,18 @@ export function AdminScenes() {
                     <CardTitle className="text-lg truncate">
                       {scene.name}
                     </CardTitle>
-                    <Badge variant={getStatusBadgeVariant(scene.status)}>
-                      {scene.status}
+                    <Badge variant={scene.result ? 'default' : 'secondary'}>
+                      {scene.result ? 'processed' : 'pending'}
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground truncate">
                     {scene.email}
                   </p>
+                  {scene.description && (
+                    <p className="text-sm text-muted-foreground">
+                      {scene.description}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Before Image */}
@@ -200,7 +192,7 @@ export function AdminScenes() {
                     </h4>
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={scene.original_image_url}
+                        src={`data:image/jpeg;base64,${scene.original_data}`}
                         alt={`Original photo by ${scene.name}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -212,14 +204,14 @@ export function AdminScenes() {
                   </div>
 
                   {/* After Image */}
-                  {scene.processed_image_url && (
+                  {scene.result && (
                     <div>
                       <h4 className="text-sm font-medium mb-2 text-gray-700">
                         After (Processed)
                       </h4>
                       <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                         <img
-                          src={scene.processed_image_url}
+                          src={`data:image/jpeg;base64,${scene.result}`}
                           alt={`Processed photo by ${scene.name}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {
@@ -231,16 +223,26 @@ export function AdminScenes() {
                     </div>
                   )}
 
+                  {/* Edit Prompt */}
+                  {scene.edit_prompt && (
+                    <div>
+                      <h4 className="text-sm font-medium mb-1 text-gray-700">
+                        Edit Prompt
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {scene.edit_prompt}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Metadata */}
                   <div className="text-xs text-muted-foreground">
                     <p>Created: {new Date(scene.created_at).toLocaleDateString()}</p>
-                    {scene.updated_at && (
-                      <p>Updated: {new Date(scene.updated_at).toLocaleDateString()}</p>
-                    )}
+                    <p>Modified: {new Date(scene.modified_at).toLocaleDateString()}</p>
                   </div>
 
                   {/* Actions */}
-                  {scene.status === 'pending' && (
+                  {!scene.result && (
                     <Button
                       onClick={() => handleApproveScene(scene.id)}
                       disabled={approvingScenes.has(scene.id)}
