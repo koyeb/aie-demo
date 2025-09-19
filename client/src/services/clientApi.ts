@@ -1,7 +1,7 @@
-import { 
+import {
   scenesResponseSchema,
   approveSceneResponseSchema,
-  type CreateUserSubmissionInput, 
+  type CreateUserSubmissionInput,
   type SubmissionResponse,
   type ScenesResponse,
   type ApproveSceneResponse
@@ -72,7 +72,7 @@ export const clientApi = {
         }
 
         const data = await response.json();
-        
+
         // Validate the response using the schema
         const validatedData = scenesResponseSchema.parse(data);
         return validatedData;
@@ -85,7 +85,7 @@ export const clientApi = {
     // Approve a scene
     approveScene: async (sceneId: string): Promise<ApproveSceneResponse> => {
       const apiBaseUrl = getApiBaseUrl();
-      const endpoint = `${apiBaseUrl}/v1/admin/scenes/${sceneId}`;
+      const endpoint = `${apiBaseUrl}/v1/admin/scene/${sceneId}`;
 
       try {
         const response = await fetch(endpoint, {
@@ -100,7 +100,7 @@ export const clientApi = {
         }
 
         const data = await response.json();
-        
+
         // Validate the response using the schema
         const validatedData = approveSceneResponseSchema.parse(data);
         return validatedData;

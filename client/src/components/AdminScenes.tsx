@@ -22,13 +22,13 @@ export function AdminScenes() {
   const loadScenes = async () => {
     setIsLoading(true);
     setErrorMessage('');
-    
+
     try {
       const scenesData = await clientApi.admin.getScenes();
       setScenes(scenesData);
     } catch (error) {
       console.error('Failed to load scenes:', error);
-      
+
       // In development mode, show sample data when API is not available
       if (import.meta.env.DEV) {
         const sampleScenes: Scene[] = [
@@ -78,10 +78,10 @@ export function AdminScenes() {
 
   const handleApproveScene = async (sceneId: number) => {
     setApprovingScenes(prev => new Set(prev).add(sceneId));
-    
+
     try {
       const result = await clientApi.admin.approveScene(sceneId.toString());
-      
+
       if (result.success) {
         // Refresh the scenes list to get updated data
         await loadScenes();
@@ -153,8 +153,8 @@ export function AdminScenes() {
           <Card>
             <CardContent className="text-center py-12">
               <p className="text-muted-foreground text-lg">No scenes found.</p>
-              <Button 
-                className="mt-4" 
+              <Button
+                className="mt-4"
                 onClick={loadScenes}
                 variant="outline"
               >
@@ -266,7 +266,7 @@ export function AdminScenes() {
 
         {/* Refresh button at the bottom */}
         <div className="mt-8 text-center">
-          <Button 
+          <Button
             onClick={loadScenes}
             variant="outline"
             disabled={isLoading}

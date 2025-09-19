@@ -86,15 +86,6 @@ function MainApp() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <LogoHeader />
 
-      {/* Admin link */}
-      <div className="absolute top-4 right-20 z-10">
-        <Link to="/admin">
-          <Button variant="outline" size="sm">
-            Admin
-          </Button>
-        </Link>
-      </div>
-
       {/* Always show camera */}
       <div className="pt-8">
         <CameraCapture
