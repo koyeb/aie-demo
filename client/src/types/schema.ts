@@ -37,11 +37,3 @@ export type Scene = z.infer<typeof sceneSchema>;
 export const scenesResponseSchema = z.array(sceneSchema);
 
 export type ScenesResponse = z.infer<typeof scenesResponseSchema>;
-
-// Response schema for scene approval
-export const approveSceneResponseSchema = z.object({
-  success: z.boolean(),
-  message: z.string().optional(),
-});
-
-export type ApproveSceneResponse = z.infer<typeof approveSceneResponseSchema>;

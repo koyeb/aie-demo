@@ -83,7 +83,7 @@ export const clientApi = {
     },
 
     // Approve a scene
-    approveScene: async (sceneId: string): Promise<ApproveSceneResponse> => {
+    approveScene: async (sceneId: string): Promise<Boolean> => {
       const apiBaseUrl = getApiBaseUrl();
       const endpoint = `${apiBaseUrl}/v1/admin/scene/${sceneId}`;
 
@@ -99,11 +99,7 @@ export const clientApi = {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-
-        // Validate the response using the schema
-        const validatedData = approveSceneResponseSchema.parse(data);
-        return validatedData;
+        return true;
       } catch (error) {
         console.error('Failed to approve scene:', error);
         throw new Error(error instanceof Error ? error.message : 'Failed to approve scene');
