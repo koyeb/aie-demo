@@ -17,3 +17,31 @@ export const submissionResponseSchema = z.object({
 });
 
 export type SubmissionResponse = z.infer<typeof submissionResponseSchema>;
+
+// Scene schema for admin functionality - matches Python database model
+export const sceneSchema = z.object({
+  id: z.number(),
+  email: z.string().email(),
+  name: z.string(),
+  created_at: z.string(),
+  modified_at: z.string(),
+  original_data: z.string(),
+  description: z.string().nullable(),
+  edit_prompt: z.string().nullable(),
+  result: z.string().nullable(),
+});
+
+export type Scene = z.infer<typeof sceneSchema>;
+
+// Response schema for scenes list
+export const scenesResponseSchema = z.array(sceneSchema);
+
+export type ScenesResponse = z.infer<typeof scenesResponseSchema>;
+
+// Response schema for scene approval
+export const approveSceneResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string().optional(),
+});
+
+export type ApproveSceneResponse = z.infer<typeof approveSceneResponseSchema>;
