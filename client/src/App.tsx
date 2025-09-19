@@ -1,15 +1,19 @@
+import { Routes, Route } from 'react-router-dom';
 import { CameraCapture } from '@/components/CameraCapture';
 import { EmailModal } from '@/components/EmailModal';
 import { SuccessModal } from '@/components/SuccessModal';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { LogoHeader } from '@/components/LogoHeader';
+import { AdminScenes } from '@/components/AdminScenes';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { clientApi } from '@/services/clientApi';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { CreateUserSubmissionInput, SubmissionResponse } from '@/types/schema';
 
-function App() {
+function MainApp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -79,61 +83,79 @@ function App() {
   };
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <LogoHeader />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <LogoHeader />
 
-        {/* Always show camera */}
-        <div className="pt-8">
-          <CameraCapture
-            onCapture={handleCameraCapture}
-            onError={handleCameraError}
-            isLoading={isLoading}
-          />
-        </div>
+      {/* Admin link */}
+      <div className="absolute top-4 right-20 z-10">
+        <Link to="/admin">
+          <Button variant="outline" size="sm">
+            Admin
+          </Button>
+        </Link>
+      </div>
 
-        {/* Loading overlay when processing */}
-        {isLoading && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 flex flex-col items-center">
-              <LoadingSpinner size="lg" className="text-blue-600 mb-4" />
-              <h2 className="text-xl font-bold text-gray-800 mb-2">
-                Processing Your Submission
-              </h2>
-              <p className="text-gray-600 text-center">
-                Please wait while we process your photo...
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Error message overlay */}
-        {errorMessage && !isLoading && (
-          <div className="fixed bottom-4 left-4 right-4 z-40">
-            <Alert className="border-red-200 bg-red-50">
-              <AlertDescription className="text-red-600">
-                {errorMessage}
-              </AlertDescription>
-            </Alert>
-          </div>
-        )}
-
-        {/* Email Modal */}
-        <EmailModal
-          open={showEmailModal}
-          onSubmit={handleEmailSubmit}
-          initialName={name}
-          initialEmail={email}
-        />
-
-        {/* Success Modal */}
-        <SuccessModal
-          open={showSuccessModal}
-          email={email}
-          message={successMessage}
-          onClose={resetApp}
+      {/* Always show camera */}
+      <div className="pt-8">
+        <CameraCapture
+          onCapture={handleCameraCapture}
+          onError={handleCameraError}
+          isLoading={isLoading}
         />
       </div>
+
+      {/* Loading overlay when processing */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 flex flex-col items-center">
+            <LoadingSpinner size="lg" className="text-blue-600 mb-4" />
+            <h2 className="text-xl font-bold text-gray-800 mb-2">
+              Processing Your Submission
+            </h2>
+            <p className="text-gray-600 text-center">
+              Please wait while we process your photo...
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Error message overlay */}
+      {errorMessage && !isLoading && (
+        <div className="fixed bottom-4 left-4 right-4 z-40">
+          <Alert className="border-red-200 bg-red-50">
+            <AlertDescription className="text-red-600">
+              {errorMessage}
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
+      {/* Email Modal */}
+      <EmailModal
+        open={showEmailModal}
+        onSubmit={handleEmailSubmit}
+        initialName={name}
+        initialEmail={email}
+      />
+
+      {/* Success Modal */}
+      <SuccessModal
+        open={showSuccessModal}
+        email={email}
+        message={successMessage}
+        onClose={resetApp}
+      />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/admin" element={<AdminScenes />} />
+      </Routes>
     </ErrorBoundary>
   );
 }

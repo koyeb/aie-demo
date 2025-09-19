@@ -1,4 +1,11 @@
-import { submissionResponseSchema, type CreateUserSubmissionInput, type SubmissionResponse } from '../types/schema';
+import { 
+  scenesResponseSchema,
+  approveSceneResponseSchema,
+  type CreateUserSubmissionInput, 
+  type SubmissionResponse,
+  type ScenesResponse,
+  type ApproveSceneResponse
+} from '../types/schema';
 
 // Get API base URL from environment variable, fallback to localhost
 const getApiBaseUrl = (): string => {
@@ -41,6 +48,65 @@ export const clientApi = {
         console.error('API request failed:', error);
         // Return a properly typed error response
         throw new Error(error instanceof Error ? error.message : 'Failed to submit data to API');
+      }
+    }
+  },
+
+  // Admin API methods
+  admin: {
+    // Get all scenes for admin review
+    getScenes: async (): Promise<ScenesResponse> => {
+      const apiBaseUrl = getApiBaseUrl();
+      const endpoint = `${apiBaseUrl}/v1/admin/scenes`;
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Validate the response using the schema
+        const validatedData = scenesResponseSchema.parse(data);
+        return validatedData;
+      } catch (error) {
+        console.error('Failed to fetch scenes:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to fetch scenes');
+      }
+    },
+
+    // Approve a scene
+    approveScene: async (sceneId: string): Promise<ApproveSceneResponse> => {
+      const apiBaseUrl = getApiBaseUrl();
+      const endpoint = `${apiBaseUrl}/v1/admin/scenes/${sceneId}`;
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Validate the response using the schema
+        const validatedData = approveSceneResponseSchema.parse(data);
+        return validatedData;
+      } catch (error) {
+        console.error('Failed to approve scene:', error);
+        throw new Error(error instanceof Error ? error.message : 'Failed to approve scene');
       }
     }
   }

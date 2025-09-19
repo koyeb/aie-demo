@@ -17,3 +17,30 @@ export const submissionResponseSchema = z.object({
 });
 
 export type SubmissionResponse = z.infer<typeof submissionResponseSchema>;
+
+// Scene schema for admin functionality
+export const sceneSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string().email(),
+  original_image_url: z.string().url(),
+  processed_image_url: z.string().url().optional(),
+  status: z.enum(['pending', 'approved', 'rejected']),
+  created_at: z.string(),
+  updated_at: z.string().optional(),
+});
+
+export type Scene = z.infer<typeof sceneSchema>;
+
+// Response schema for scenes list
+export const scenesResponseSchema = z.array(sceneSchema);
+
+export type ScenesResponse = z.infer<typeof scenesResponseSchema>;
+
+// Response schema for scene approval
+export const approveSceneResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string().optional(),
+});
+
+export type ApproveSceneResponse = z.infer<typeof approveSceneResponseSchema>;
