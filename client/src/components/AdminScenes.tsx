@@ -200,7 +200,7 @@ export function AdminScenes() {
                   </div>
 
                   {/* Actions */}
-                  {!scene.result && (
+                  {scene.result != "" && (
                     <Button
                       onClick={() => handleApproveScene(scene.id)}
                       disabled={approvingScenes.has(scene.id)}
