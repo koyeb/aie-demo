@@ -68,6 +68,8 @@ function MainApp() {
       setErrorMessage('Failed to submit your data. Please try again.');
     } finally {
       setIsLoading(false);
+      setName('');
+      setEmail('');
     }
   };
 
