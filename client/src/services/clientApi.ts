@@ -57,7 +57,7 @@ export const clientApi = {
     // Get all scenes for admin review
     getScenes: async (): Promise<ScenesResponse> => {
       const apiBaseUrl = getApiBaseUrl();
-      const endpoint = `${apiBaseUrl}/v1/admin/scenes`;
+      const endpoint = `${apiBaseUrl}/v1/admin/scenes?limit=100`;
 
       try {
         const response = await fetch(endpoint, {
