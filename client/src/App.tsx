@@ -6,11 +6,11 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { LogoHeader } from '@/components/LogoHeader';
 import { AdminScenes } from '@/components/AdminScenes';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { clientApi } from '@/services/clientApi';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import type { CreateUserSubmissionInput, SubmissionResponse } from '@/types/schema';
 
 function MainApp() {
@@ -144,12 +144,21 @@ function MainApp() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/admin" element={<AdminScenes />} />
-      </Routes>
-    </ErrorBoundary>
+    <AuthProvider>
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<MainApp />} />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <AdminScenes />
+              </ProtectedRoute>
+            } 
+          />
+        </Routes>
+      </ErrorBoundary>
+    </AuthProvider>
   );
 }
 

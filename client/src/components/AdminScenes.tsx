@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { clientApi } from '@/services/clientApi';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Scene } from '@/types/schema';
 
 export function AdminScenes() {
@@ -13,6 +14,7 @@ export function AdminScenes() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [approvingScenes, setApprovingScenes] = useState<Set<number>>(new Set());
+  const { logout } = useAuth();
 
   // Load scenes on component mount
   useEffect(() => {
@@ -40,11 +42,11 @@ export function AdminScenes() {
     try {
       const result = await clientApi.admin.approveScene(sceneId.toString());
 
-      if (result.success) {
+      if (result) {
         // Refresh the scenes list to get updated data
         await loadScenes();
       } else {
-        setErrorMessage(result.message || 'Failed to approve scene');
+        setErrorMessage('Failed to approve scene');
       }
     } catch (error) {
       console.error('Failed to approve scene:', error);
@@ -87,11 +89,20 @@ export function AdminScenes() {
                 Review and approve user-submitted scenes
               </p>
             </div>
-            <Link to="/">
-              <Button variant="outline">
-                ← Back to Main App
+            <div className="flex items-center gap-2">
+              <Link to="/">
+                <Button variant="outline">
+                  ← Back to Main App
+                </Button>
+              </Link>
+              <Button 
+                variant="destructive" 
+                onClick={logout}
+                size="sm"
+              >
+                Logout
               </Button>
-            </Link>
+            </div>
           </div>
         </div>
 

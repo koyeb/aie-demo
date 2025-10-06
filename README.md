@@ -15,12 +15,34 @@ Core stack:
 # Install dependencies
 npm install --legacy-peer-deps
 
+# Configure environment (optional)
+cp .env.example .env
+# Edit .env to set admin credentials if needed
+
 # Start development server
 npm run dev
 
 # Build for production
 npm run build
 ```
+
+### Admin Panel Configuration
+
+The admin panel (`/admin`) is protected by basic authentication. Configure the credentials using environment variables:
+
+**Environment Variables:**
+- `VITE_ADMIN_USERNAME` - Admin username (default: "admin")
+- `VITE_ADMIN_PASSWORD` - Admin password (default: "admin123")
+
+**Setup Instructions:**
+1. Copy `.env.example` to `.env`
+2. Set `VITE_ADMIN_USERNAME` and `VITE_ADMIN_PASSWORD` with your desired credentials
+3. Restart the development server or rebuild for production
+
+**Security Notes:**
+- Change the default credentials in production environments
+- Store credentials securely and never commit them to version control
+- The authentication is session-based and will persist until browser restart
 
 ### Docker
 

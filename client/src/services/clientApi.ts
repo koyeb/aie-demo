@@ -1,15 +1,34 @@
 import {
   scenesResponseSchema,
-  approveSceneResponseSchema,
   type CreateUserSubmissionInput,
   type SubmissionResponse,
-  type ScenesResponse,
-  type ApproveSceneResponse
+  type ScenesResponse
 } from '../types/schema';
 
 // Get API base URL from environment variable, fallback to localhost
 const getApiBaseUrl = (): string => {
   return import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+};
+
+// Get authentication headers for admin requests
+const getAuthHeaders = (): HeadersInit => {
+  const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
+  
+  if (isAuthenticated) {
+    // Create basic auth header using environment variables
+    const username = import.meta.env.VITE_ADMIN_USERNAME || 'admin';
+    const password = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    const credentials = btoa(`${username}:${password}`);
+    
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Basic ${credentials}`,
+    };
+  }
+  
+  return {
+    'Content-Type': 'application/json',
+  };
 };
 
 // Client-side API service for photo submission
@@ -62,9 +81,7 @@ export const clientApi = {
       try {
         const response = await fetch(endpoint, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: getAuthHeaders(),
         });
 
         if (!response.ok) {
@@ -83,16 +100,14 @@ export const clientApi = {
     },
 
     // Approve a scene
-    approveScene: async (sceneId: string): Promise<Boolean> => {
+    approveScene: async (sceneId: string): Promise<boolean> => {
       const apiBaseUrl = getApiBaseUrl();
       const endpoint = `${apiBaseUrl}/v1/admin/scene/${sceneId}`;
 
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: getAuthHeaders(),
         });
 
         if (!response.ok) {
